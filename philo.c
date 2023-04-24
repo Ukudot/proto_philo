@@ -7,26 +7,26 @@
 
 typedef struct s_shared
 {
-	int	start;
-	int	n_philos;
-	int	death;
+	int		start;
+	int		n_philos;
+	int		death;
 	long	o_time;
-	int	time_to_eat;
-	int	time_to_die;
-	int	time_to_sleep;
+	int		time_to_eat;
+	int		time_to_die;
+	int		time_to_sleep;
 }	t_shared;
 
 typedef struct s_philo
 {
-	int		id;
-	pthread_t	tid;
-	long		last_eat;
-	int		t_init;
-	int		fork;
+	int				id;
+	pthread_t		tid;
+	long			last_eat;
+	int				t_init;
+	int				fork;
 	pthread_mutex_t	*fork_s;
-	int		*next_fork;
+	int				*next_fork;
 	pthread_mutex_t	*next_fork_s;
-	t_shared	*shared;
+	t_shared		*shared;
 }	t_philo;
 
 int	ft_atoi(char *num)
@@ -51,6 +51,16 @@ long	gettime(struct timeval *time, long origin)
 	return ((long) time->tv_sec * 1000 + time->tv_usec / 1000 - origin);
 }
 
+void	ft_msleep(int m)
+{
+	struct timeval	time;
+	long			t;
+
+	t = gettime(&time, 0);
+	while (m > gettime(&time, t))
+		usleep(100);
+}
+
 void	*ft_routine(void *arg)
 {
 	t_philo		*philo;
@@ -65,26 +75,44 @@ void	*ft_routine(void *arg)
 		;
 	printf("%ld ms: philo %d started\n", gettime(&time, philo->shared->o_time), philo->id);
 	philo->last_eat = gettime(&time, 0);
-	while (true)
+	if (philo->id % 2 == 0)
+		usleep(30);
+	while (42)
 	{
 		pthread_mutex_lock(philo->fork_s);
-		if (philo->fork == 1)
-			forks += (philo->fork)--;
-		pthread_mutex_unlock(philo->fork_s);
+	//	if (philo->fork == 1)
+	//	{
+	//		forks += (philo->fork)--;
+			printf("%ld ms: %d has taken a fork\n", gettime(&time, philo->shared->o_time), philo->id);
+	//	}
+	//	pthread_mutex_unlock(philo->fork_s);
 		pthread_mutex_lock(philo->next_fork_s);
-		if (*(philo->next_fork) == 1)
-			forks += (*(philo->next_fork))--;
-		pthread_mutex_unlock(philo->fork_s);
-		if (forks == 2)
-		{
-			//reset time_eat
-			//eat
-			//put_down_forks
-			//sleep
-		}
+	//	if (*(philo->next_fork) == 1)
+	//	{
+	//		forks += (*(philo->next_fork))--;
+			printf("%ld ms: %d has taken a fork\n", gettime(&time, philo->shared->o_time), philo->id);
+	//	}
+	//	pthread_mutex_unlock(philo->fork_s);
+	//	if (forks == 2)
+	//	{
+			philo->last_eat = gettime(&time, 0);
+			printf("%ld ms: %d is eating\n", gettime(&time, philo->shared->o_time), philo->id);
+			ft_msleep(philo->shared->time_to_eat);
+	//		pthread_mutex_lock(philo->fork_s);
+	//		philo->fork++;
+			pthread_mutex_unlock(philo->fork_s);
+	//		pthread_mutex_lock(philo->next_fork_s);
+	//		(*(philo->next_fork))++;
+			pthread_mutex_unlock(philo->next_fork_s);
+	//		forks -= 2;
+			printf("%ld ms: %d is sleeping\n", gettime(&time, philo->shared->o_time), philo->id);
+			ft_msleep(philo->shared->time_to_sleep);
+			printf("%ld ms: %d is thinking\n", gettime(&time, philo->shared->o_time), philo->id);
+	//	}
 		if (gettime(&time, philo->last_eat) > philo->shared->time_to_die || philo->shared->death)
 		{
 			philo->shared->death = 1;
+			printf("%ld ms: %d died\n", gettime(&time, philo->shared->o_time), philo->id);
 			break ;
 		}
 	}
@@ -97,7 +125,8 @@ void	*ft_death_routine(void *arg)
 
 	shared = (t_shared *) arg;
 	while (!shared->death)
-		;
+		usleep(100);
+	printf("DIED\n");
 	return (NULL);
 }
 
@@ -125,12 +154,12 @@ t_philo *ft_set_philos(t_shared *shared)
 		philos[i].fork_s = &fork_s[i];
 		if (i == shared->n_philos - 1)
 		{
-			philos[i].next_fork_s = philos[0].fork_s;
+			philos[i].next_fork_s = &fork_s[0];
 			philos[i].next_fork = &philos[0].fork;
 		}
 		else
 		{
-			philos[i].next_fork_s = philos[i + 1].fork_s;
+			philos[i].next_fork_s = &fork_s[i + 1];
 			philos[i].next_fork = &philos[i + 1].fork;
 		}
 		philos[i].shared = shared;
@@ -167,7 +196,7 @@ int	ft_wait_philos(t_philo *philos)
 	i = 0;
 	while (i < philos[0].shared->n_philos)
 	{
-		err = pthread_detach(philos[i].tid, NULL);
+		err = pthread_detach(philos[i].tid);
 		if (err)
 		{
 			free(philos);
@@ -188,12 +217,15 @@ int	main(int argc, char *argv[])
 	int		n;
 
 	printf("Program started at time: %ld ms\n", gettime(&time, 0));
-	if (argc != 2)
+	if (argc != 5)
 	{
 		write(2, "Usage error\n", 12);
 		return (1);
 	}
 	shared.n_philos = ft_atoi(argv[1]);
+	shared.time_to_die = ft_atoi(argv[2]);
+	shared.time_to_eat = ft_atoi(argv[3]);
+	shared.time_to_sleep = ft_atoi(argv[4]);
 	shared.death = 0;
 	philos = ft_set_philos(&shared);
 	if (!philos)
@@ -215,11 +247,7 @@ int	main(int argc, char *argv[])
 	pthread_join(death, NULL);
 	printf("All philos are terminated\n");
 	n = 0;
-	while (n < shared.n_philos)
-	{
-		free(philos[n].s_fork);
-		n++;
-	}
+	free(philos[0].fork_s);
 	free(philos);
 	return (0);
 }
