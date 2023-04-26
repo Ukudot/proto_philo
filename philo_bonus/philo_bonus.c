@@ -116,6 +116,7 @@ int	main(int argc, char *argv[])
 		write(2, "Memory error.\n", 14);
 		return (12);
 	}
+	sem_unlink(shared.sem_name);
 	shared.death = 0;
 	pids = (pid_t *)malloc(sizeof(pid_t) * shared.args[0]);
 	if (!pids)
@@ -141,7 +142,10 @@ int	main(int argc, char *argv[])
 				if (gettime(&time, last_eat) > shared.args[1] || shared.death)
 				{
 					if (!shared.death)
+					{
+						usleep(30);
 						printf("%ld ms: %d died\n", gettime(&time, shared.o_time), i + 1);
+					}
 					exit(0);
 				}
 				printf("%ld ms: %d has taken a fork\n", gettime(&time, shared.o_time), i + 1);
@@ -149,7 +153,10 @@ int	main(int argc, char *argv[])
 				if (gettime(&time, last_eat) > shared.args[1] || shared.death)
 				{
 					if (!shared.death)
+					{
+						usleep(30);
 						printf("%ld ms: %d died\n", gettime(&time, shared.o_time), i + 1);
+					}
 					exit(0);
 				}
 				printf("%ld ms: %d has taken a fork\n", gettime(&time, shared.o_time), i + 1);
@@ -163,7 +170,10 @@ int	main(int argc, char *argv[])
 				if (gettime(&time, last_eat) > shared.args[1] || shared.death)
 				{
 					if (!shared.death)
+					{
+						usleep(30);
 						printf("%ld ms: %d died\n", gettime(&time, shared.o_time), i + 1);
+					}
 					exit(0);
 				}
 				printf("%ld ms: %d is sleeping\n", gettime(&time, shared.o_time), i + 1);
@@ -171,7 +181,10 @@ int	main(int argc, char *argv[])
 				if (gettime(&time, last_eat) > shared.args[1] || shared.death)
 				{
 					if (!shared.death)
+					{
+						usleep(30);
 						printf("%ld ms: %d died\n", gettime(&time, shared.o_time), i + 1);
+					}
 					exit(0);
 				}
 				printf("%ld ms: %d is thinking\n", gettime(&time, shared.o_time), i + 1);
