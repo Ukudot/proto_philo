@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:06:33 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 11:03:49 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/26 12:15:29 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ int	main(int argc, char *argv[])
 	}
 	shared.o_time = gettime(&time, 0);
 	printf("All philos are defined: %ld ms\n", shared.o_time);
-	pthread_create(&death, NULL, ft_death_routine, (void *) &shared);
 	shared.start = 1;
 	if (ft_init_philos(philos))
 		return (1);
+	pthread_create(&death, NULL, ft_death_routine, (void *) &philos);
 	while (!philos[shared.args[0] - 1].t_init)
 		;
 	memset((void *) &shared.start, 0, sizeof(int));

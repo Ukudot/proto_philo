@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:10:59 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 11:02:42 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/26 12:31:21 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,77 +29,27 @@ void	*ft_routine(void *arg)
 	while (philo->n_meals)
 	{
 		pthread_mutex_lock(philo->fork_s);
-		if (gettime(&time, philo->last_eat) > philo->shared->args[1] || philo->shared->death)
-		{
-			pthread_mutex_lock(&philo->shared->death_s);
-			if (!philo->shared->death)
-			{
-				usleep(10);
-				printf("%ld ms: %d died\n", gettime(&time, philo->shared->o_time), philo->id);
-			}
-			philo->shared->death = 1;
-			pthread_mutex_lock(&philo->shared->death_s);
+		if (philo->shared->death)
 			break ;
-		}
 		printf("%ld ms: %d has taken a fork\n", gettime(&time, philo->shared->o_time), philo->id);
 		pthread_mutex_lock(philo->next_fork_s);
-		if (gettime(&time, philo->last_eat) > philo->shared->args[1] || philo->shared->death)
-		{
-			pthread_mutex_lock(&philo->shared->death_s);
-			if (!philo->shared->death)
-			{
-				usleep(10);
-				printf("%ld ms: %d died\n", gettime(&time, philo->shared->o_time), philo->id);
-			}
-			philo->shared->death = 1;
-			pthread_mutex_lock(&philo->shared->death_s);
+		if (philo->shared->death)
 			break ;
-		}
 		printf("%ld ms: %d has taken a fork\n", gettime(&time, philo->shared->o_time), philo->id);
 		philo->last_eat = gettime(&time, 0);
 		philo->n_meals--;
-		if (gettime(&time, philo->last_eat) > philo->shared->args[0] || philo->shared->death)
-		{
-			pthread_mutex_lock(&philo->shared->death_s);
-			if (!philo->shared->death)
-			{
-				usleep(10);
-				printf("%ld ms: %d died\n", gettime(&time, philo->shared->o_time), philo->id);
-			}
-			philo->shared->death = 1;
-			pthread_mutex_lock(&philo->shared->death_s);
+		if (philo->shared->death)
 			break ;
-		}
 		printf("%ld ms: %d is eating\n", gettime(&time, philo->shared->o_time), philo->id);
 		ft_msleep(philo->shared->args[2]);
 		pthread_mutex_unlock(philo->fork_s);
 		pthread_mutex_unlock(philo->next_fork_s);
-		if (gettime(&time, philo->last_eat) > philo->shared->args[1] || philo->shared->death)
-		{
-			pthread_mutex_lock(&philo->shared->death_s);
-			if (!philo->shared->death)
-			{
-				usleep(10);
-				printf("%ld ms: %d died\n", gettime(&time, philo->shared->o_time), philo->id);
-			}
-			philo->shared->death = 1;
-			pthread_mutex_lock(&philo->shared->death_s);
+		if (philo->shared->death)
 			break ;
-		}
 		printf("%ld ms: %d is sleeping\n", gettime(&time, philo->shared->o_time), philo->id);
 		ft_msleep(philo->shared->args[3]);
-		if (gettime(&time, philo->last_eat) > philo->shared->args[1] || philo->shared->death)
-		{
-			pthread_mutex_lock(&philo->shared->death_s);
-			if (!philo->shared->death)
-			{
-				usleep(10);
-				printf("%ld ms: %d died\n", gettime(&time, philo->shared->o_time), philo->id);
-			}
-			philo->shared->death = 1;
-			pthread_mutex_lock(&philo->shared->death_s);
+		if (philo->shared->death)
 			break ;
-		}
 		printf("%ld ms: %d is thinking\n", gettime(&time, philo->shared->o_time), philo->id);
 	}
 	philo->shared->n_philo_eat++;
@@ -108,15 +58,27 @@ void	*ft_routine(void *arg)
 
 void	*ft_death_routine(void *arg)
 {
-	t_shared	*shared;
+	t_philo			*philos;
+	struct timeval	time;
 
-	shared = (t_shared *) arg;
-	while (!shared->death)
+	philos = (t_philo *) arg;
+	while (|philos[0].shared->start)
+		;
+	i++;
+	while (!philos[0].shared->death)
 	{
+		if (gettime(&time, philos[i].last_eat) >= philos[0].shared->args[1])
+		{
+			printf("%ld ms: %d died\n", gettime(&time, philo[i].shared->o_time), i + 1);
+			philo[i].shared->death = 1;
+			return (NULL);
+		}
 		if (shared->n_philo_eat == shared->args[0])
 			return (NULL);
-		usleep(100);
+		if (i == philos[0].shared->args[0] - 1)
+			i = -1;
+		i++;
+		usleep(50);
 	}
-	printf("DIED\n");
 	return (NULL);
 }
