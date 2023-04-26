@@ -28,4 +28,8 @@ int		ft_atoi(char *num);
 long	gettime(struct timeval *time, long origin);
 void	ft_msleep(int m);
 
+// philo_checks_bonus
+int		ft_is_all_digit(int n, char **strs);
+int		ft_checks(int argc, char **argv, t_shared *shared);
+
 #endif
