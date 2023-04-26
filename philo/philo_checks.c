@@ -6,11 +6,11 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 11:15:51 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 11:16:53 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/26 11:58:57 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_bonus.h"
+#include "philo.h"
 
 int	ft_is_all_digit(int n, char **strs)
 {
