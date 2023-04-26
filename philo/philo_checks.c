@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 11:15:51 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 11:58:57 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/26 11:16:53 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	ft_checks(int argc, char **argv, t_shared *shared)
 
 	if (argc != 5 && argc != 6)
 	{
-		write(2, "Usage error: too many args.\n", 28);
+		write(2, "Usage error\n", 12);
 		return (1);
 	}
 	if (ft_is_all_digit(argc - 1, &argv[1]))
@@ -60,4 +60,3 @@ int	ft_checks(int argc, char **argv, t_shared *shared)
 		shared->args[4] = -1;
 	return (0);
 }
-

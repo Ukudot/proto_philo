@@ -12,27 +12,46 @@
 
 #include "philo.h"
 
+int	ft_init_shared(t_shared *shared)
+{
+	struct timeval	time;
+
+	shared->o_time = gettime(&time, 0);
+	shared->death = 0;
+	if (pthread_mutex_init(&shared->death_s, NULL))
+		return (1);
+	shared->start = 1;
+	return (0);
+}
+
+void	ft_die(t_philo *philos)
+{
+	int	n;
+
+	n = 0;
+	while (n < philos[0].shared->args[0])
+	{
+		pthread_mutex_destroy(philos[n].fork_s);
+		n++;
+	}
+	pthread_mutex_destroy(&philos[0].shared->death_s);
+	free(philos[0].fork_s);
+	free(philos);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_philo			*philos;
 	t_shared		shared;
 	pthread_t		death;
-	struct timeval	time;
-	int				n;
 
 	if (ft_checks(argc, argv, &shared))
 		return (2);
-	shared.death = 0;
-	pthread_mutex_init(&shared.death_s, NULL);
+	if (ft_init_shared(&shared))
+		return (1);
 	philos = ft_set_philos(&shared);
 	if (!philos)
-	{
-		write(2, "Memory error\n", 13);
-		return (12);
-	}
-	shared.o_time = gettime(&time, 0);
-	printf("All philos are defined: %ld ms\n", shared.o_time);
-	shared.start = 1;
+		return (write(2, "Memory error\n", 13) - 1);
 	if (ft_init_philos(philos))
 		return (1);
 	while (!philos[shared.args[0] - 1].t_init)
@@ -42,15 +61,6 @@ int	main(int argc, char *argv[])
 	if (ft_wait_philos(philos))
 		return (1);
 	pthread_join(death, NULL);
-	printf("All philos are terminated\n");
-	n = 0;
-	while (n < shared.args[0])
-	{
-		pthread_mutex_destroy(philos[n].fork_s);
-		n++;
-	}
-	pthread_mutex_destroy(&shared.death_s);
-	free(philos[0].fork_s);
-	free(philos);
+	ft_die(philos);
 	return (0);
 }
