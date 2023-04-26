@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:10:59 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 12:31:21 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/26 15:12:13 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,25 +60,26 @@ void	*ft_death_routine(void *arg)
 {
 	t_philo			*philos;
 	struct timeval	time;
+	int				i;
 
-	philos = (t_philo *) arg;
-	while (|philos[0].shared->start)
+	philos = (t_philo *) arg; 
+	while (philos[0].shared->start)
 		;
-	i++;
+	i = 0;
 	while (!philos[0].shared->death)
 	{
 		if (gettime(&time, philos[i].last_eat) >= philos[0].shared->args[1])
 		{
-			printf("%ld ms: %d died\n", gettime(&time, philo[i].shared->o_time), i + 1);
-			philo[i].shared->death = 1;
+			printf("%ld ms: %d died\n", gettime(&time, philos[i].shared->o_time), i + 1);
+			philos[i].shared->death = 1;
 			return (NULL);
 		}
-		if (shared->n_philo_eat == shared->args[0])
+		if (philos[i].shared->n_philo_eat == philos[i].shared->args[0])
 			return (NULL);
 		if (i == philos[0].shared->args[0] - 1)
 			i = -1;
 		i++;
-		usleep(50);
+		usleep(100);
 	}
 	return (NULL);
 }

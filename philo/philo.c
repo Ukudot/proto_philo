@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:06:33 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 12:15:29 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/26 14:54:02 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ int	main(int argc, char *argv[])
 	shared.start = 1;
 	if (ft_init_philos(philos))
 		return (1);
-	pthread_create(&death, NULL, ft_death_routine, (void *) &philos);
 	while (!philos[shared.args[0] - 1].t_init)
 		;
+	pthread_create(&death, NULL, ft_death_routine, (void *) philos);
 	memset((void *) &shared.start, 0, sizeof(int));
 	if (ft_wait_philos(philos))
 		return (1);
