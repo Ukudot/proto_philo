@@ -6,26 +6,35 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:10:59 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 15:12:13 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/27 07:59:58 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+int	ft_take_forks(t_philo *philo, struct timeval *time)
+{
+	pthread_mutex_lock(philo->fork_s);
+	if (philo->shared->death)
+		return (1);
+	printf(FORK, gettime(time, philo->shared->o_time), philo->id);
+	pthread_mutex_lock(philo->next_fork_s);
+	if (philo->shared->death)
+		return (1);
+	printf(FORK, gettime(time, philo->shared->o_time), philo->id);
+	return (0);
+}
+
 void	ft_cycle(t_philo *philo, struct timeval *time)
 {
 	while (philo->n_meals)
 	{
-		pthread_mutex_lock(philo->fork_s);
-		if (philo->shared->death)
+		if (ft_take_forks(philo, time))
 			break ;
-		printf(FORK, gettime(time, philo->shared->o_time), philo->id);
-		pthread_mutex_lock(philo->next_fork_s);
-		if (philo->shared->death)
-			break ;
-		printf(FORK, gettime(time, philo->shared->o_time), philo->id);
 		philo->last_eat = gettime(time, 0);
-		if (philo->n_meals-- && philo->shared->death)
+		if (--philo->n_meals == 0)
+			philo->shared->n_philo_eat++;
+		if (philo->shared->death)
 			break ;
 		printf(EAT, gettime(time, philo->shared->o_time), philo->id);
 		ft_msleep(philo->shared->args[2]);
@@ -54,9 +63,6 @@ void	*ft_routine(void *arg)
 	if (philo->id % 2 == 0)
 		ft_msleep(30);
 	ft_cycle(philo, &time);
-	philo->shared->n_philo_eat++;
-	philo->n_meals = -1;
-	ft_cycle(philo, &time);
 	return (NULL);
 }
 
@@ -78,7 +84,7 @@ void	*ft_death_routine(void *arg)
 			p[i].shared->death = 1;
 			return (NULL);
 		}
-		if (p[i].shared->n_philo_eat == p[i].shared->args[0])
+		if (p[0].shared->n_philo_eat == p[0].shared->args[0])
 			return (NULL);
 		if (i == p[0].shared->args[0] - 1)
 			i = -1;

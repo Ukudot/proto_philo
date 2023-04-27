@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:06:33 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 14:54:02 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/27 07:50:11 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	ft_init_shared(t_shared *shared)
 	struct timeval	time;
 
 	shared->o_time = gettime(&time, 0);
+	shared->n_philo_eat = 0;
 	shared->death = 0;
 	if (pthread_mutex_init(&shared->death_s, NULL))
 		return (1);

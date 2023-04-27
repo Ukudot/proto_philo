@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 15:37:12 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 14:51:50 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/27 08:01:28 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -62,6 +62,7 @@ int		ft_init_philos(t_philo *philos);
 int		ft_wait_philos(t_philo *philos);
 
 // philo_thread
+int		ft_take_forks(t_philo *philo, struct timeval *time);
 void	ft_cycle(t_philo *philo, struct timeval *time);
 void	*ft_routine(void *arg);
 void	*ft_death_routine(void *arg);
