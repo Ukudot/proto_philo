@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:10:59 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/27 07:59:58 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/27 08:33:18 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	*ft_death_routine(void *arg)
 	p = (t_philo *) arg;
 	while (p[0].shared->start)
 		;
+	ft_msleep(50);
 	i = 0;
 	while (!p[0].shared->death)
 	{
@@ -89,7 +90,6 @@ void	*ft_death_routine(void *arg)
 		if (i == p[0].shared->args[0] - 1)
 			i = -1;
 		i++;
-		usleep(50);
 	}
 	return (NULL);
 }
