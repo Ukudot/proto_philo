@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 11:15:51 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 11:16:53 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/27 08:43:39 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	ft_checks(int argc, char **argv, t_shared *shared)
 	while (++i < argc)
 	{
 		shared->args[i - 1] = ft_atoi(argv[i]);
-		if (shared->args[i - 1] == -1)
+		if (shared->args[i - 1] == -1 || shared->args[i - 1] == 0)
 		{
 			write(2, "Syntax error: all args must be positive integers.\n", 50);
 			return (1);
