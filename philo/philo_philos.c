@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:07:47 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/27 07:48:51 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/28 09:03:35 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int	ft_philo_set_var(t_philo *philo, t_shared *shared,
 			pthread_mutex_destroy(&fork_s[n]);
 			n++;
 		}
+		pthread_mutex_destroy(&shared->live_s);
 		pthread_mutex_destroy(&shared->death_s);
 		free(philo - i);
 		return (1);
@@ -46,25 +47,24 @@ t_philo	*ft_set_philos(t_shared *sh)
 	int				i;
 	t_philo			*philos;
 	pthread_mutex_t	*fork_s;
+	pthread_mutex_t	*lock;
 
 	philos = (t_philo *)malloc(sizeof(t_philo) * sh->args[0]);
 	if (!philos)
-	{
-		pthread_mutex_destroy(&sh->death_s);
-		return (NULL);
-	}
+		return (ft_destroy(NULL, NULL, sh));
 	fork_s = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * sh->args[0]);
 	if (!fork_s)
-	{
-		pthread_mutex_destroy(&sh->death_s);
-		free(philos);
-		return (NULL);
-	}
+		return (ft_destroy(philos, NULL, sh));
+	lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * sh->args[0]);
+	if (!fork_s)
+		return (ft_destroy(philos, fork_s, sh));
 	i = 0;
 	while (i < sh->args[0])
 	{
 		if (ft_philo_set_var(&philos[i], sh, fork_s, i))
 			return (NULL);
+		pthread_mutex_init(&lock[i], NULL);
+		philos[i].lock_t_eat = &lock[i];
 		i++;
 	}
 	return (philos);
@@ -74,8 +74,8 @@ int	ft_init_philos(t_philo *philos)
 {
 	int	i;
 
-	i = 0;
-	while (i < philos[0].shared->args[0])
+	i = -1;
+	while (++i < philos[0].shared->args[0])
 	{
 		if (pthread_create(&philos[i].tid, NULL,
 				ft_routine, (void *) &philos[i]))
@@ -84,36 +84,38 @@ int	ft_init_philos(t_philo *philos)
 				pthread_detach(philos[i].tid);
 			while (i < philos[0].shared->args[0])
 			{
+				pthread_mutex_destroy(philos[i].lock_t_eat);
 				pthread_mutex_destroy(philos[i].fork_s);
 				i++;
 			}
+			pthread_mutex_destroy(&philos[0].shared->live_s);
 			pthread_mutex_destroy(&philos[0].shared->death_s);
 			free(philos[0].fork_s);
+			free(philos[0].lock_t_eat);
 			free(philos);
-			printf("Error occurred\n");
-			return (1);
+			return (printf("Error occurred\n"));
 		}
-		i++;
 	}
 	return (0);
 }
 
-int	ft_wait_philos(t_philo *philos)
+void	ft_wait_philos(t_philo *philos)
 {
-	int	err;
 	int	i;
 
 	i = 0;
 	while (i < philos[0].shared->args[0])
 	{
-		err = pthread_detach(philos[i].tid);
-		if (err)
-		{
-			free(philos);
-			printf("Error occurred\n");
-			return (1);
-		}
+		pthread_detach(philos[i].tid);
 		i++;
 	}
-	return (0);
+}
+
+void	*ft_destroy(t_philo *philos, pthread_mutex_t *fork_s, t_shared *shared)
+{
+	pthread_mutex_destroy(&shared->live_s);
+	pthread_mutex_destroy(&shared->death_s);
+	free(fork_s);
+	free(philos);
+	return (NULL);
 }
