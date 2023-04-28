@@ -22,6 +22,8 @@ typedef struct s_shared
 	char	*sem_name;
 	pid_t	*pids;
 	sem_t	*sem;
+	sem_t	*sem_child;
+	sem_t	*sem_death;
 }	t_shared;
 
 // philo_utils_bonus
