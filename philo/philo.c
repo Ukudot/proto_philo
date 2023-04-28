@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:06:33 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/28 08:56:43 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/28 10:38:38 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int	main(int argc, char *argv[])
 	memset((void *) &shared.start, 0, sizeof(int));
 	ft_wait_philos(philos);
 	pthread_join(death, NULL);
+	ft_msleep(100);
 	ft_die(philos);
 	return (0);
 }

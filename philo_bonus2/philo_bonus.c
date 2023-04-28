@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 11:15:35 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/27 08:44:16 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/28 10:02:31 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ int	main(int argc, char *argv[])
 	int				i;
 	struct timeval	time;
 	pthread_t		*deaths;
+	sem_t			*start;
 
 	if (ft_checks(argc, argv, &shared))
 		return (2);
@@ -120,12 +121,20 @@ int	main(int argc, char *argv[])
 	}
 	shared.sem = sem_open(shared.sem_name, O_CREAT, 0660, shared.args[0]);
 	i = 0;
+	sem_unlink("/start");
+	start = sem_open("/start", O_CREAT, 0660, shared.args[0]);
+	for (int n = 0; n < shared.args[0]; n++)
+		sem_wait(start);
 	shared.o_time = gettime(&time, 0);
 	while (i < shared.args[0])
 	{
 		shared.pids[i] = fork();
 		if (!shared.pids[i])
 		{
+			sem_wait(start);
+			printf("--%ld ms\n", gettime(&time, shared.o_time));
+			if (i % 2 == 0)
+				ft_msleep(30);
 			shared.id = i + 1;
 			shared.last_eat = gettime(&time, 0);
 			sem_unlink("/sem_child");
@@ -134,8 +143,6 @@ int	main(int argc, char *argv[])
 			shared.sem_death = sem_open("/sem_death", O_CREAT, 0660, 1);
 			pthread_create(&deaths[i], NULL, ft_death_check, (void *) &shared);
 			pthread_detach(deaths[i]);
-			if (i % 2 == 0)
-				ft_msleep(30);
 			while (shared.args[4] != 0)
 			{
 				sem_wait(shared.sem);
@@ -194,6 +201,8 @@ int	main(int argc, char *argv[])
 		}
 		i++;
 	}
+	for (int n = 0; n < shared.args[0]; n++)
+		sem_post(start);
 	if (shared.args[4] == -1)
 	{
 		waitpid(-1, NULL, 0);

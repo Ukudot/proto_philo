@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 15:37:12 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/28 09:03:57 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/28 10:36:36 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -74,6 +74,7 @@ void	*ft_death_routine(void *arg);
 
 // philo_thread2
 int		ft_check_death(t_philo *p, int i);
+int		ft_shared_death(t_philo *philo);
 
 // philo_checks
 int		ft_is_all_digit(int n, char **strs);

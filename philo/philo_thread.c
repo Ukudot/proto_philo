@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:10:59 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/28 08:54:51 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/04/28 10:35:50 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 int	ft_take_forks(t_philo *philo, struct timeval *time)
 {
 	pthread_mutex_lock(philo->fork_s);
-	if (philo->shared->death)
+	if (ft_shared_death(philo))
 		return (1);
 	printf(FORK, gettime(time, philo->shared->o_time), philo->id);
 	pthread_mutex_lock(philo->next_fork_s);
-	if (philo->shared->death)
+	if (ft_shared_death(philo))
 		return (1);
 	printf(FORK, gettime(time, philo->shared->o_time), philo->id);
 	return (0);
@@ -29,7 +29,7 @@ int	ft_put_forks(t_philo *philo, struct timeval *time)
 {
 	pthread_mutex_unlock(philo->fork_s);
 	pthread_mutex_unlock(philo->next_fork_s);
-	if (philo->shared->death)
+	if (ft_shared_death(philo))
 		return (1);
 	printf(SLEEP, gettime(time, philo->shared->o_time), philo->id);
 	return (0);
@@ -50,14 +50,14 @@ void	ft_cycle(t_philo *philo, struct timeval *time)
 			philo->shared->n_philo_eat++;
 			pthread_mutex_unlock(&philo->shared->live_s);
 		}
-		if (philo->shared->death)
+		if (ft_shared_death(philo))
 			break ;
 		printf(EAT, gettime(time, philo->shared->o_time), philo->id);
 		ft_msleep(philo->shared->args[2]);
 		if (ft_put_forks(philo, time))
 			break ;
 		ft_msleep(philo->shared->args[3]);
-		if (philo->shared->death)
+		if (ft_shared_death(philo))
 			break ;
 		printf(THINK, gettime(time, philo->shared->o_time), philo->id);
 	}
