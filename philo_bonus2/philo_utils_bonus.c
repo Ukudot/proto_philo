@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 16:04:11 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/26 08:33:14 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/05/01 15:35:32 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,18 +54,19 @@ int	ft_atoi(char *num)
 	return (n);
 }
 
-long	gettime(struct timeval *time, long origin)
+long	gettime(long origin)
 {
-	gettimeofday(time, NULL);
-	return ((long) time->tv_sec * 1000 + time->tv_usec / 1000 - origin);
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return ((long) time.tv_sec * 1000 + time.tv_usec / 1000 - origin);
 }
 
 void	ft_msleep(int m)
 {
-	struct timeval	time;
 	long			t;
 
-	t = gettime(&time, 0);
-	while (m > gettime(&time, t))
+	t = gettime(0);
+	while (m > gettime(t))
 		usleep(100);
 }

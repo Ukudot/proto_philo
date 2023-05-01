@@ -6,7 +6,7 @@
 /*   By: gpanico <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 11:15:51 by gpanico           #+#    #+#             */
-/*   Updated: 2023/04/27 08:37:38 by gpanico          ###   ########.fr       */
+/*   Updated: 2023/05/01 09:49:30 by gpanico          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ft_is_all_digit(int n, char **strs)
 	return (0);
 }
 
-int	ft_checks(int argc, char **argv, t_shared *shared)
+int	ft_checks(int argc, char **argv, t_philo *philo)
 {
 	int	i;
 
@@ -49,15 +49,14 @@ int	ft_checks(int argc, char **argv, t_shared *shared)
 	i = 0;
 	while (++i < argc)
 	{
-		shared->args[i - 1] = ft_atoi(argv[i]);
-		if (shared->args[i - 1] == -1)
+		philo->args[i - 1] = ft_atoi(argv[i]);
+		if (philo->args[i - 1] == -1)
 		{
 			write(2, "Syntax error: all args must be positive integers.\n", 50);
 			return (1);
 		}
 	}
 	if (argc == 5)
-		shared->args[4] = -1;
+		philo->args[4] = -1;
 	return (0);
 }
-

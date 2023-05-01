@@ -6,7 +6,7 @@
 #    By: gpanico <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/27 07:32:54 by gpanico           #+#    #+#              #
-#    Updated: 2023/04/28 10:37:02 by gpanico          ###   ########.fr        #
+#    Updated: 2023/05/01 08:39:19 by gpanico          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME	= philo
 SRCS	= philo.c philo_checks.c philo_thread.c philo_philos.c philo_utils.c \
 		  philo_thread2.c
 OBJS	= ${SRCS:.c=.o}
-CC		= gcc -Wall -Werror -Wextra
+CC		= gcc -Wall -Werror -Wextra 
 RM		= rm -f
 
 %.o:%.c
