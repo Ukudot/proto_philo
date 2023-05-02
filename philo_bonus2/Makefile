@@ -6,14 +6,15 @@
 #    By: gpanico <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/27 07:32:54 by gpanico           #+#    #+#              #
-#    Updated: 2023/05/01 16:00:26 by gpanico          ###   ########.fr        #
+#    Updated: 2023/05/02 10:17:30 by gpanico          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo_bonus
-SRCS	= philo_bonus.c philo_checks_bonus.c philo_utils_bonus.c
+SRCS	= philo_bonus.c philo_checks_bonus.c philo_utils_bonus.c \
+		  philo_death_bonus.c philo_philos_bonus.c
 OBJS	= ${SRCS:.c=.o}
-CC		= gcc -Wall -Werror -Wextra -fsanitize=thread 
+CC		= gcc -Wall -Werror -Wextra 
 RM		= rm -f
 
 %.o:%.c
